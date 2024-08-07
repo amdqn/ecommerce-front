@@ -3,10 +3,12 @@ import { useState } from 'react';
 import './App.css';
 import ProductList from './components/ProductList';
 import { Product } from './data/products';
-import Cart from './components/Cart';
+import Header from './components/Layout/Header';
+import CartPage from './pages/Cart/CartPage';
 
 function App() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [showCartPreview, setShowCartPreview] = useState<boolean>(false);
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prevCartItems) => [...prevCartItems, product]);
@@ -17,16 +19,19 @@ function App() {
       alert('Votre panier est vide.');
       return;
     }
-
-    // Logique pour passer la commande
     alert('Commande passée avec succès !');
-    setCartItems([]); // Vider le panier après la commande
+    setCartItems([]); 
   };
+
   return (
     <div className="App">
-      <h1>Bienvenue sur notre Boutique</h1>
+      <Header cartItems={cartItems} onCartHover={setShowCartPreview} />
       <ProductList onAddToCart={handleAddToCart} />
-      <Cart cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
+      {showCartPreview && (
+        <div className="cart-preview">
+          <CartPage cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
+        </div>
+      )}
     </div>
   );
 }
